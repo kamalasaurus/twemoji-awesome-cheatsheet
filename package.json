@@ -1,0 +1,24 @@
+{
+  "name": "twemoji-awesome-cheatsheet",
+  "version": "1.0.0",
+  "description": "Autogenerate a cheatsheet website for twemoji-awesome!",
+  "main": "src/parser.js",
+  "scripts": {
+    "build": "node src/parser.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kamalasaurus/twemoji-awesome-cheatsheet.git"
+  },
+  "keywords": [
+    "twemoji",
+    "awesome",
+    "cheatsheet"
+  ],
+  "author": "Kamal R <kamalasaurus@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kamalasaurus/twemoji-awesome-cheatsheet/issues"
+  },
+  "homepage": "https://github.com/kamalasaurus/twemoji-awesome-cheatsheet#readme"
+}

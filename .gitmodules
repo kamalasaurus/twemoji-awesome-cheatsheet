@@ -1,0 +1,3 @@
+[submodule "modules/twemoji-awesome"]
+	path = modules/twemoji-awesome
+	url = git@github.com:ellekasai/twemoji-awesome.git
