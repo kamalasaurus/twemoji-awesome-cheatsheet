@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  font-family: 'Monaco', monospace;
+}
+
+.container {
+  width: 100%;
+}
+
+.element {
+  box-sizing: border-box;
+  width: 32%;
+  padding: 15px;
+  display: inline-block;
+  min-width: 800px;
+  border-radius: 3px;
+  border: solid #777 1px;
+}
+
+span {
+  background-color: #cecece;
+  border-radius: 3px;
+}
