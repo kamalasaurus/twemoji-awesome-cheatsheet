@@ -8,17 +8,23 @@ html, body {
   font-family: 'Monaco', monospace;
 }
 
-div {
+.container {
+  width: 100%;
+  position: relative;
+  font-size: 0;
+}
+
+.element {
+  font-size: 1rem;
+  position: relative;
   box-sizing: border-box;
-  width: 32%;
   padding: 15px;
-  display: inline-block;
-  min-width: 800px;
-  border-radius: 3px;
-  border: solid #777 1px;
+  margin: 5px;
 }
 
 span {
   background-color: #cecece;
   border-radius: 3px;
+  display: inline-block;
+  padding: 0 3px;
 }
