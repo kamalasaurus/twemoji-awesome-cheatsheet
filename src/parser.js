@@ -55,6 +55,7 @@ var elementGroups = awesomeCss
 
 var elements = Object
   .keys(elementGroups)
+  .map(function(key) { return elementGroups[key]; })
   .map(makeElement);
 
 var header = [
@@ -85,10 +86,15 @@ var footer = [
 
 
 function makeElement(names) {
+
+  var nameSpans = names.map(function(name) {
+    return '\t\t\t\t<span>' + name + '</span>';
+  }).join('\n');
+
   return [
     '\t\t\t<div class="element">',
-    '\t\t\t\t<i class="twa twa-2x ' + name[0] + '"></i>',
-    '\t\t\t\t<span>' + names.join(', ') + '</span>',
+    '\t\t\t\t<i class="twa twa-2x ' + names[0] + '"></i>',
+    nameSpans,
     '\t\t\t</div>',
   ].join('\n');
 }
