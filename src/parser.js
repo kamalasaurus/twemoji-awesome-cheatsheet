@@ -72,9 +72,9 @@ var header = [
 ].join('\n');
 
 var subheader = [
-  '\t\t\t<div class="subheader>"',
+  '\t\t\t<div class="subheader">',
   '\t\t\t\t<h1>Twemoji Awesome Cheatsheet</h1>',
-  '\t\t\t\t<p>make sure to declare <meta charset="UTF-8"> in the head of your app if you\'re using the non-ascii classes like åland-flag</p>',
+  '\t\t\t\t<p>make sure to declare &lt;meta charset=&quot;UTF-8&quot;&gt; in the head of your app if you\'re using the non-ascii classes like åland-flag</p>',
   '\t\t\t</div>',
 ].join('\n');
 

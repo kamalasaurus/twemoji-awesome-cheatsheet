@@ -16,6 +16,7 @@ html, body {
 
 .subheader {
   font-size: 1rem;
+  padding: 15px;
 }
 
 .element {
