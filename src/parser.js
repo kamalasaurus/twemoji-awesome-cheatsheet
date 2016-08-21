@@ -7,6 +7,8 @@ var groups = require('../emoji-groups.json');
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// CONSTANTS FUNCTIONS
+///////////////////////////////////////////////////////////////////////////////
 
 var HTML_NAME = path.join('dist', 'index.html');
 
@@ -19,6 +21,11 @@ var STYLES_OUTPUT = path.join('dist', 'styles.css');
 
 
 var awesomeCss = fs.readFileSync(TWEMOJI_NAME, 'utf8');
+
+
+///////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS
+///////////////////////////////////////////////////////////////////////////////
 
 // only get class names and codePoints from the css rule
 function stripExcess(rule) {
@@ -45,6 +52,7 @@ function filterModifiers(namePointPair) {
   ].indexOf(namePointPair[0]);
 }
 
+// group human readable names by code-point to display in series
 function groupByPoint(group, namePointPair) {
   var name = namePointPair[0];
   var point = namePointPair[1];
@@ -52,22 +60,8 @@ function groupByPoint(group, namePointPair) {
   return group;
 }
 
-var elementGroups = awesomeCss
-  .split('\n\n')
-  .slice(1)
-  .map(stripExcess)
-  .filter(filterModifiers)
-  .reduce(groupByPoint, {});
 
-var contextGroups = Object
-  .keys(elementGroups)
-  .reduce(function(cGroups, codePoint) {
-    elements = elementGroups[codePoint];
-    group = groups[codePoint] || groupByName(elements[0]) || 'twemoji-custom';
-    cGroups[group] ? cGroups[group].push(elements) : cGroups[group] = [elements];
-    return cGroups;
-  }, {});
-
+// context group names
 function groupByName(elementName) {
   var map = [
     'smilies-and-people',
@@ -84,10 +78,11 @@ function groupByName(elementName) {
   return map[key];
 }
 
+// select unmatched names from the Mac OS list for a group they belong in
 function selectName(name) {
   return [
     [ // smilies-and-people
-      /face/,
+      /^(?=.*\bface\b)(?=((?!fox).)*$).*$/,
       /snowboarder/,
       /horse-racing/,
       /skin-type/,
@@ -117,7 +112,7 @@ function selectName(name) {
       /bat/,
       /shark/,
       /owl/,
-      /fox-face/,
+      /fox/,
       /butterfly/,
       /deer/,
       /gorilla/,
@@ -160,6 +155,7 @@ function selectName(name) {
       /baseball/,
       /sailboat/,
       /tent/,
+      /flag-in-hole/
     ],
     [ // travels-and-places
       /church/,
@@ -255,7 +251,7 @@ function selectName(name) {
       /ten/,
     ],
     [ //flags
-      /^(?=.*\bflag\b)(?=^((?!rainbow).)*$)(?=^((?!pirate).)*$).*$/,
+      /^(?=.*\bflag\b)(?=^((?!rainbow).)*$)(?=^((?!pirate).)*$)(?=^((?!hole).)*$).*$/,
     ],
   ].map(function(tests) {
     return tests
@@ -266,10 +262,50 @@ function selectName(name) {
 }
 
 
-var sections = Object
-  .keys(contextGroups)
+///////////////////////////////////////////////////////////////////////////////
+// PARSE CSS
+///////////////////////////////////////////////////////////////////////////////
+
+
+// generate groups from css
+var elementGroups = awesomeCss
+  .split('\n\n')
+  .slice(1)
+  .map(stripExcess)
+  .filter(filterModifiers)
+  .reduce(groupByPoint, {});
+
+// group icon-name groups by vendor-specific context groups such as  "smilies-and-people"
+var contextGroups = Object
+  .keys(elementGroups)
+  .reduce(function(cGroups, codePoint) {
+    elements = elementGroups[codePoint];
+    group = groups[codePoint] || groupByName(elements[0]) || 'twemoji-custom';
+    cGroups[group] ? cGroups[group].push(elements) : cGroups[group] = [elements];
+    return cGroups;
+  }, {});
+
+// this is a manually globbed set of the context group names in the order they should
+// be displayed, there are ways to automate this to make it more robust, but I don't
+// think it's worth pursuing at this time
+var sortedContextGroups = [
+    'smilies-and-people',
+    'twemoji-custom',
+    'animals-and-nature',
+    'food-and-drink',
+    'activity',
+    'travels-and-places',
+    'objects',
+    'symbols',
+    'flags',
+];
+
+// generate sections of html
+var sections = sortedContextGroups
   .map(makeSection);
 
+///////////////////////////////////////////////////////////////////////////////
+// HTML GENERATORS
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -289,7 +325,7 @@ var header = [
 var subheader = [
   '\t\t\t<div class="subheader">',
   '\t\t\t\t<h1>Twemoji Awesome Cheatsheet</h1>',
-  '\t\t\t\t<p>make sure to declare &lt;meta charset=&quot;UTF-8&quot;&gt; in the head of your app if you\'re using the non-ascii classes like åland-flag</p>',
+  '\t\t\t\t<p>if a class with a weird character isn\'t working, declare &lt;meta charset=&quot;UTF-8&quot;&gt; in the head of your app if you need something like å or ô, they should all be removed, though</p>',
   '\t\t\t</div>',
 ].join('\n');
 
@@ -298,7 +334,6 @@ var footer = [
   '\t</body>',
   '</html>',
 ].join('\n');
-
 
 function makeSection(groupName) {
   var elements = contextGroups[groupName]
@@ -330,6 +365,11 @@ function makeElement(names) {
 }
 
 var html = header + '\n' + subheader + '\n' + sections.join('\n') + '\n' + footer;
+
+
+///////////////////////////////////////////////////////////////////////////////
+// WRITE OUTPUT TO FILES
+///////////////////////////////////////////////////////////////////////////////
 
 fs.writeFileSync(HTML_NAME, html);
 fs.createReadStream(TWEMOJI_NAME).pipe(fs.createWriteStream(TWEMOJI_OUTPUT));
