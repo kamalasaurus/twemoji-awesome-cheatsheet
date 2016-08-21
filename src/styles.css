@@ -19,6 +19,15 @@ html, body {
   padding: 15px;
 }
 
+.section {
+  font-size: 1rem;
+  padding: 15px;
+  margin: 15px;
+  border: dashed 3px #777;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
 .element {
   font-size: 1rem;
   position: relative;

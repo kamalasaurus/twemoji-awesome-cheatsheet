@@ -1,10 +1,16 @@
 var fs = require('fs');
 var path = require('path')
 
+// import this from modules/twemoji-awesome/modules/twemoji-possum/dist/emoji-groups.json
+// when it's pushed up
+var groups = require('../emoji-groups.json');
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 var HTML_NAME = path.join('dist', 'index.html');
 
-//var INPUT_NAME = path.join('modules', 'twemoji-awesome', 'twemoji-awesome.css');
+// var TWEMOJI_NAME = path.join('modules', 'twemoji-awesome', 'twemoji-awesome.css');
 var TWEMOJI_NAME = 'twemoji-awesome.css';
 var TWEMOJI_OUTPUT = path.join('dist', 'twemoji-awesome.css');
 
@@ -53,10 +59,219 @@ var elementGroups = awesomeCss
   .filter(filterModifiers)
   .reduce(groupByPoint, {});
 
-var elements = Object
+var contextGroups = Object
   .keys(elementGroups)
-  .map(function(key) { return elementGroups[key]; })
-  .map(makeElement);
+  .reduce(function(cGroups, codePoint) {
+    elements = elementGroups[codePoint];
+    group = groups[codePoint] || groupByName(elements[0]) || 'twemoji-custom';
+    cGroups[group] ? cGroups[group].push(elements) : cGroups[group] = [elements];
+    return cGroups;
+  }, {});
+
+function groupByName(elementName) {
+  var map = [
+    'smilies-and-people',
+    'animals-and-nature',
+    'food-and-drink',
+    'activity',
+    'travels-and-places',
+    'objects',
+    'symbols',
+    'flags',
+  ];
+
+  var key = selectName(elementName);
+  return map[key];
+}
+
+function selectName(name) {
+  return [
+    [ // smilies-and-people
+      /face/,
+      /snowboarder/,
+      /horse-racing/,
+      /skin-type/,
+      /family/,
+      /couple/,
+      /kiss/,
+      /dancing/,
+      /hand/,
+      /fist/,
+      /rolling-on-the-floor/,
+      /pregnant/,
+      /selfie/,
+      /prince/,
+      /man-in-tuxedo/,
+      /mother/,
+      /shrug/,
+      /cartwheel/,
+      /pointing/
+    ],
+    [ // animals-and-nature
+      /sun/,
+      /cloud/,
+      /snowman/,
+      /comet/,
+      /snowflake/,
+      /wilted-flower/,
+      /bat/,
+      /shark/,
+      /owl/,
+      /fox-face/,
+      /butterfly/,
+      /deer/,
+      /gorilla/,
+      /lizard/,
+      /rhino/,
+      /shrimp/,
+      /squid/,
+      /eagle/,
+      /duck/,
+    ],
+    [ // food-and-drink
+      /beverage/,
+      /croissant/,
+      /avocado/,
+      /cucumber/,
+      /bacon/,
+      /potato/,
+      /carrot/,
+      /baguette/,
+      /salad/,
+      /shallow-pan/,
+      /egg/,
+      /milk/,
+      /peanuts/,
+      /flatbread/,
+      /kiwifruit/,
+      /pancakes/
+    ],
+    [ // activity
+      /scooter/,
+      /canoe/,
+      /juggling/,
+      /fencer/,
+      /wrestlers/,
+      /water-polo/,
+      /handball/,
+      /boxing/,
+      /martial-arts/,
+      /soccer/,
+      /baseball/,
+      /sailboat/,
+      /tent/,
+    ],
+    [ // travels-and-places
+      /church/,
+      /fountain/,
+      /fuel/,
+    ],
+    [ //objects
+      /keyboard/,
+      /umbrella/,
+      /hot-springs/,
+      /anchor/,
+      /scissors/,
+      /airplane/,
+      /envelope/,
+      /black-nib/,
+      /octagonal-sign/,
+      /shopping-trolley/,
+      /drum/,
+      /glass/,
+      /spoon/,
+      /goal-net/,
+      /medal/,
+      /watch/,
+      /hourglass/,
+      /phone/,
+
+    ],
+    [ //symbols
+      /exclamation/,
+      /information/,
+      /arrow/,
+      /ballot/,
+      /skull/,
+      /radioactive/,
+      /biohazard/,
+      /cross/,
+      /dharma/,
+      /aries/,
+      /taurus/,
+      /sagittarius/,
+      /capricorn/,
+      /aquarius/,
+      /pisces/,
+      /spade/,
+      /club/,
+      /hearts/,
+      /heart-suit/,
+      /heavy-heart/,
+      /red-heart/,
+      /diamond/,
+      /check-mark/,
+      /multiplication-x/,
+      /star/,
+      /asterisk/,
+      /sparkle/,
+      /wavy-dash/,
+      /ideograph/,
+      /mahjong/,
+      /button/,
+      /squared/,
+      /black-heart/,
+      /speech-bubble/,
+      /hash/,
+      /circle/,
+      /square/,
+      /yin-yang/,
+      /gemini/,
+      /cancer/,
+      /leo/,
+      /virgo/,
+      /libra/,
+      /scorpius/,
+      /recycling/,
+      /wheelchair/,
+      /warning/,
+      /voltage/,
+      /circle/,
+      /no-entry/,
+      /pencil/,
+      /cross/,
+      /alternation/,
+      /peace/,
+      /zero/,
+      /one/,
+      /two/,
+      /three/,
+      /four/,
+      /five/,
+      /six/,
+      /seven/,
+      /eight/,
+      /nine/,
+      /ten/,
+    ],
+    [ //flags
+      /^(?=.*\bflag\b)(?=^((?!rainbow).)*$)(?=^((?!pirate).)*$).*$/,
+    ],
+  ].map(function(tests) {
+    return tests
+      .map(function(test) { return test.test(name); })
+      .some(function(isTrue) { return isTrue; });
+  }).indexOf(true);
+
+}
+
+
+var sections = Object
+  .keys(contextGroups)
+  .map(makeSection);
+
+///////////////////////////////////////////////////////////////////////////////
+
 
 var header = [
   '<!doctype html>',
@@ -85,6 +300,21 @@ var footer = [
 ].join('\n');
 
 
+function makeSection(groupName) {
+  var elements = contextGroups[groupName]
+    .map(makeElement)
+    .join('\n');
+
+  return [
+    '\t\t\t<div class="section">',
+    '<h2>',
+    groupName.split('-').map(function(n) { return n.charAt(0).toUpperCase() + n.slice(1); }).join(' '),
+    '</h2>',
+    elements,
+    '\t\t\t</div>',
+  ].join('\n');
+}
+
 function makeElement(names) {
 
   var nameSpans = names.map(function(name) {
@@ -93,13 +323,13 @@ function makeElement(names) {
 
   return [
     '\t\t\t<div class="element">',
-    '\t\t\t\t<i class="twa twa-2x ' + names[0] + '"></i>',
+    '\t\t\t\t<i class="twa ' + names[0] + '"></i>',
     nameSpans,
     '\t\t\t</div>',
   ].join('\n');
 }
 
-var html = header + '\n' + subheader + '\n' + elements.join('\n') + '\n' + footer;
+var html = header + '\n' + subheader + '\n' + sections.join('\n') + '\n' + footer;
 
 fs.writeFileSync(HTML_NAME, html);
 fs.createReadStream(TWEMOJI_NAME).pipe(fs.createWriteStream(TWEMOJI_OUTPUT));
