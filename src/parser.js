@@ -5,13 +5,13 @@ var path = require('path')
 // CONSTANTS
 ///////////////////////////////////////////////////////////////////////////////
 
-var HTML_OUTPUT = path.join(__dirname, '..', 'index.html');
+var HTML_OUTPUT = path.join(__dirname, '..', 'docs', 'index.html');
 
 var TWEMOJI_PATH = path.join(__dirname, '..', 'modules', 'twemoji-awesome', 'twemoji-awesome.css');
-var TWEMOJI_OUTPUT = path.join(__dirname, '..', 'twemoji-awesome.css');
+var TWEMOJI_OUTPUT = path.join(__dirname, '..', 'docs', 'twemoji-awesome.css');
 
 var STYLES_PATH = path.join(__dirname, 'styles.css');
-var STYLES_OUTPUT = path.join(__dirname, '..', 'styles.css');
+var STYLES_OUTPUT = path.join(__dirname, '..', 'docs', 'styles.css');
 
 var GROUPS_PATH = path.join(__dirname, '..', 'modules', 'twemoji-awesome', 'modules', 'twemoji-possum', 'dist', 'emoji-groups.json');
 
