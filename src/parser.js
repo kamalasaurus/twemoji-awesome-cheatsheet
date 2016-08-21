@@ -1,26 +1,23 @@
 var fs = require('fs');
 var path = require('path')
 
-// import this from modules/twemoji-awesome/modules/twemoji-possum/dist/emoji-groups.json
-// when it's pushed up
-var groups = require('../emoji-groups.json');
-
-
 ///////////////////////////////////////////////////////////////////////////////
-// CONSTANTS FUNCTIONS
+// CONSTANTS
 ///////////////////////////////////////////////////////////////////////////////
 
-var HTML_NAME = path.join('dist', 'index.html');
+var HTML_OUTPUT = path.join(__dirname, '..', 'index.html');
 
-// var TWEMOJI_NAME = path.join('modules', 'twemoji-awesome', 'twemoji-awesome.css');
-var TWEMOJI_NAME = 'twemoji-awesome.css';
-var TWEMOJI_OUTPUT = path.join('dist', 'twemoji-awesome.css');
+var TWEMOJI_PATH = path.join(__dirname, '..', 'modules', 'twemoji-awesome', 'twemoji-awesome.css');
+var TWEMOJI_OUTPUT = path.join(__dirname, '..', 'twemoji-awesome.css');
 
-var STYLES_NAME = path.join('src', 'styles.css');
-var STYLES_OUTPUT = path.join('dist', 'styles.css');
+var STYLES_PATH = path.join(__dirname, 'styles.css');
+var STYLES_OUTPUT = path.join(__dirname, '..', 'styles.css');
+
+var GROUPS_PATH = path.join(__dirname, '..', 'modules', 'twemoji-awesome', 'modules', 'twemoji-possum', 'dist', 'emoji-groups.json');
 
 
-var awesomeCss = fs.readFileSync(TWEMOJI_NAME, 'utf8');
+var awesomeCss = fs.readFileSync(TWEMOJI_PATH, 'utf8');
+var groups = require(GROUPS_PATH);
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -371,9 +368,9 @@ var html = header + '\n' + subheader + '\n' + sections.join('\n') + '\n' + foote
 // WRITE OUTPUT TO FILES
 ///////////////////////////////////////////////////////////////////////////////
 
-fs.writeFileSync(HTML_NAME, html);
-fs.createReadStream(TWEMOJI_NAME).pipe(fs.createWriteStream(TWEMOJI_OUTPUT));
-fs.createReadStream(STYLES_NAME).pipe(fs.createWriteStream(STYLES_OUTPUT));
+fs.writeFileSync(HTML_OUTPUT, html);
+fs.createReadStream(TWEMOJI_PATH).pipe(fs.createWriteStream(TWEMOJI_OUTPUT));
+fs.createReadStream(STYLES_PATH).pipe(fs.createWriteStream(STYLES_OUTPUT));
 
 console.log('cheat sheet website generated');
 
